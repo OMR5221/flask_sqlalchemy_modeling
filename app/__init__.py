@@ -11,36 +11,33 @@ from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
 # from models import ES_PLANT_DIM
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'oracle://ES_DW_OWNER:.8+4=EOV@PGSDWD'
-metadata = MetaData()
-tables = ['es_plant_dim']
-db = SQLAlchemy(app, metadata=metadata)
-metadata.reflect(db.engine, only=tables)
-Base = automap_base(metadata=metadata)
 
-"""
-class ES_PLANT_DIM(Base):
-    __tablename__ = 'es_plant_dim'
+db = SQLAlchemy()
 
-    def __repr__(self):
-        return '<ES_PLANT_DIM: {}>'.format(self.plant_code)
-"""
-from models import *
+def create_app():
 
-Base.prepare()
-# Base.prepare(db.engine, reflect=True)
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'oracle://ES_DW_OWNER:.8+4=EOV@PGSDWD'
 
-#data = db.session.query(ES_PLANT_DIM).all()
+    db.app = app
+    db.init_app(app)
 
-#for row in data:
-#    print(row.plant_code)
+    metadata = MetaData()
+    tables = ['es_plant_dim']
+    metadata.reflect(db.engine, only=tables)
+    Base = automap_base(metadata=metadata)
 
-if __name__ == "__main__":
-    # show the table schema
-    # print(Table1.__table__.c)
+    '''
+    class ES_PLANT_DIM(Base):
+        __tablename__ = 'es_plant_dim'
 
-    data = db.session.query(ES_PLANT_DIM).all()
+        def __repr__(self):
+            return '<ES_PLANT_DIM: {}>'.format(self.plant_code)
+    '''
+    from app import models
 
-    for row in data:
-        print(row.plant_code)
+    Base.prepare()
+
+    # Base.prepare(db.engine, reflect=True)
+
+    return app
