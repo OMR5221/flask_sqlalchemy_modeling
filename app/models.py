@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from __init__ import Base, db
 # from app import db, login_manager
 
-db.reflect()
+# db.reflect()
 
 class ES_PLANT_DIM(Base):
     __tablename__ = 'es_plant_dim'
